@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Search from './components/search'
+import Search from './components/Search'
+import MovieCard from './components/MovieCard'
+import movieCard from './components/MovieCard';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3/discover/movie';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -56,13 +58,12 @@ const App = () => {
   }, []);
 
   return (
-    <main className='flex items-center justify-center'>
-      <div className="pattern">
+    <main className='p-10'>
+      <div>
         <div className="wrapper">
-
           <header className='text-center space-y-8'>
             <div className='flex items-center justify-center'>
-              <img src="./logo1.png" alt="Hero Banner" className='w-50' />
+              <img src="./hero.png" alt="Hero Banner" className='w-50' />
 
             </div>
 
@@ -76,7 +77,7 @@ const App = () => {
 
           <section className='mt-10'>
             <h2 className='text-2xl text-muted-foreground font-bold py-5 mt-40'>
-              List of trending Movies
+              All Movies
             </h2>
 
             {isLoading ? (
@@ -86,7 +87,7 @@ const App = () => {
             ) : (
               <ul className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6'>
                 {movieList.map((movie) => (
-                  <p>{movie.title}</p>
+                  <MovieCard key={movie.id} movie={movie} />
                 ))}
               </ul>
             )}
