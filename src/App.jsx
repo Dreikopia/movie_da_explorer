@@ -1,7 +1,16 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react'
 import Search from './components/Search'
 import MovieCard from './components/MovieCard'
 import movieCard from './components/MovieCard';
+=======
+import React, { useEffect, useState } from 'react';
+import Search from './components/Search';
+import MovieCard from './components/MovieCard';
+import { useDebounce } from 'react-use';
+import { getTrendingMovies, updateSearchCount } from './appwrite';
+
+>>>>>>> Stashed changes
 
 const API_BASE_URL = 'https://api.themoviedb.org/3/discover/movie';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -19,9 +28,17 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [movieList, setMovieList] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+<<<<<<< Updated upstream
   const fetchMovies = async () => {
+=======
+  //debouncing 700 ms import from react-use package 
+  useDebounce(() => setDebounceSearchTerm(searchTerm), 700, [searchTerm])
+
+  const fetchMovies = async (query = '') => {
+>>>>>>> Stashed changes
     try {
 
       setIsLoading(true);
@@ -32,7 +49,7 @@ const App = () => {
       const response = await fetch(endpoint, API_OPTIONS);
 
       if (!response.ok) {
-        throw new error('Failed to fetch movies');
+        throw new Error('Failed to fetch movies');
       }
 
       const data = await response.json();
@@ -45,6 +62,10 @@ const App = () => {
 
       setMovieList(data.results || []) //save the result to the use state hook
 
+      if (query && data.results.length > 0) {
+        await updateSearchCount(query, data.results[0])
+      }
+
     } catch (error) {
       console.log(`error fetching movies: ${error}`);
       setErrorMessage(`Error fetching movies please try again later`);
@@ -53,9 +74,27 @@ const App = () => {
     }
   }
 
+
+  const loadTrendingMovies = async () => {
+    try {
+      const movies = await getTrendingMovies();
+
+      setTrendingMovies(movies);
+
+    } catch (error) {
+      console.log(`error fetching movies : ${error}`)
+    }
+  }
+
   useEffect(() => {
     fetchMovies();
   }, []);
+
+
+  //seperate the call so the load trending movies doesnt always load after the search
+  useEffect(() => {
+    loadTrendingMovies()
+  }, [])
 
   return (
     <main className='p-10'>
@@ -72,12 +111,35 @@ const App = () => {
               <br />
               Enjoy Without Hassle
             </h1>
+
             <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </header>
 
-          <section className='mt-10'>
-            <h2 className='text-2xl text-muted-foreground font-bold py-5 mt-40'>
-              All Movies
+          {trendingMovies.length > 0 && (
+            <section className='mt-10'>
+              <h2 className='text-2xl font-bold mb-5'>Trending Movies</h2>
+
+              <ul className='flex flex-row overflow-x-auto gap-4 pb-4'>
+                {trendingMovies.map((movie, index) => (
+                  <li key={movie.$id} className='relative flex-shrink-0 w-[100px]'>
+                    <p className='absolute -left-1 -bottom-2 text-5xl font-black text-white/10 [-webkit-text-stroke:1.5px_white] leading-none select-none'>
+                      {index + 1}
+                    </p>
+                    <img
+                      src={movie.poster_url}
+                      alt={movie.title}
+                      className='w-full h-[140px] object-cover rounded-lg'
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+
+          <section className='mt-2'>
+            <h2 className='text-2xl text-muted-foreground font-bold py-5'>
+              Popular
             </h2>
 
             {isLoading ? (
