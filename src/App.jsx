@@ -3,6 +3,7 @@ import Search from './components/Search';
 import MovieCard from './components/MovieCard';
 import { useDebounce } from 'react-use';
 import { getTrendingMovies, updateSearchCount } from './appwrite';
+import Spinner from './components/Spinner';
 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -123,7 +124,7 @@ const App = () => {
                 {trendingMovies.map((movie, index) => (
                   <li
                     key={movie.$id}
-                    className="relative shrink-0 w-100px"
+                    className="relative shrink-0 w-[150px]"
                   >
                     <p className="absolute -left-1 -bottom-2 text-5xl font-black text-white/10 [-webkit-text-stroke:1.5px_white] leading-none select-none">
                       {index + 1}
@@ -132,7 +133,7 @@ const App = () => {
                     <img
                       src={movie.poster_url}
                       alt={movie.movie_title}
-                      className="w-full h-140px object-cover rounded-lg"
+                      className="w-full h-[200px] object-cover rounded-lg"
                     />
                   </li>
                 ))}
@@ -146,7 +147,7 @@ const App = () => {
             </h2>
 
             {isLoading ? (
-              <p>Loading</p>
+              <Spinner />
             ) : errorMessage ? (
               <p>{errorMessage}</p>
             ) : (
@@ -162,7 +163,7 @@ const App = () => {
           </section>
         </div>
       </div>
-    </main>
+    </main >
   );
 };
 
