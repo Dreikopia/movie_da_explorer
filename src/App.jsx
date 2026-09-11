@@ -11,7 +11,7 @@ const API_OPTIONS = {
   method: 'GET',
   headers: {
     accept: 'application/json',
-    Authorization: `Bearer ${API_KEY} `,
+    Authorization: `Bearer ${API_KEY}`,
   },
 };
 
@@ -36,8 +36,8 @@ const App = () => {
       setErrorMessage('');
 
       const endpoint = query
-        ? `${API_BASE_URL} /search/movie ? query = ${encodeURIComponent(query)} `
-        : `${API_BASE_URL} /discover/movie ? sort_by = popularity.desc`;
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
 
       const response = await fetch(endpoint, API_OPTIONS);
 
@@ -123,7 +123,7 @@ const App = () => {
                 {trendingMovies.map((movie, index) => (
                   <li
                     key={movie.$id}
-                    className="relative flex-shrink-0 w-[100px]"
+                    className="relative shrink-0 w-100px"
                   >
                     <p className="absolute -left-1 -bottom-2 text-5xl font-black text-white/10 [-webkit-text-stroke:1.5px_white] leading-none select-none">
                       {index + 1}
@@ -131,8 +131,8 @@ const App = () => {
 
                     <img
                       src={movie.poster_url}
-                      alt={movie.title}
-                      className="w-full h-[140px] object-cover rounded-lg"
+                      alt={movie.movie_title}
+                      className="w-full h-140px object-cover rounded-lg"
                     />
                   </li>
                 ))}
